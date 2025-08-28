@@ -1,4 +1,4 @@
-name: Build MD Daily Scheduler APK
+name: Build APK
 
 on:
   workflow_dispatch:
@@ -9,30 +9,29 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          python-version: '3.10'
 
-      - name: Download Android SDK
-        uses: android-actions/setup-android@v2
-
-      - name: Accept Licenses and Install Build Tools
+      - name: Install build dependencies
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          sudo apt update
+          sudo apt install -y zip unzip openjdk-17-jdk python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libgstreamer1.0 libgstreamer1.0-dev libmtdev-dev
+          python3 -m pip install --upgrade pip setuptools Cython virtualenv
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+      - name: Install Buildozer
+        run: |
+          pip install buildozer
 
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: |
+          buildozer android debug
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
-          name: md-daily-scheduler-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: MD-Daily-Scheduler-APK
+          path: bin/*.apk
