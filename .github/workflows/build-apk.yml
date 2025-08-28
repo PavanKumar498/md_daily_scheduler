@@ -31,9 +31,10 @@ jobs:
             libgl1-mesa-dev libgles2-mesa-dev \
             git unzip
 
-      - name: Install Buildozer
+      - name: Install Buildozer and Cython
         run: |
           python3 -m pip install --upgrade pip
+          python3 -m pip install cython
           python3 -m pip install buildozer
 
       - name: Build APK with Buildozer
