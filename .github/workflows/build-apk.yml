@@ -32,7 +32,8 @@ jobs:
           buildozer -v android debug
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+
         with:
           name: md_daily_scheduler_apk
           path: bin/*.apk
